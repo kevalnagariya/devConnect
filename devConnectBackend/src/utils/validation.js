@@ -12,6 +12,47 @@ const validateSignUpData = (req) => {
   }
 };
 
+const validateEditProfileData = (req) => {
+  const allowedEditFields = [
+    "firstName",
+    "lastName",
+    "emailId",
+    "photoUrl",
+    "gender",
+    "age",
+    "about",
+    "skills",
+  ];
+
+  const isEditAllowed = Object.keys(req.body).every((field) =>
+    allowedEditFields.includes(field)
+  );
+
+  return isEditAllowed;
+};
+
+const validateForgotPasswordData = (req) => {
+  const { emailId, newPassword } = req.body;
+
+  if (!emailId || !newPassword) {
+    throw new Error("Email and new password are required");
+  }
+
+  if (!validator.isEmail(emailId)) {
+    throw new Error("Invalid email address");
+  }
+
+  if (!validator.isStrongPassword(newPassword)) {
+    throw new Error(
+      "Password must be strong (min 8 chars, include upper, lower, number & symbol)"
+    );
+  }
+
+  return true;
+};
+
 module.exports = {
   validateSignUpData,
+  validateEditProfileData,
+  validateForgotPasswordData
 };
