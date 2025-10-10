@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 const { userAuth } = require("../middlewares/auth");
 const {
   validateEditProfileData,
-  validateForgotPasswordData,
 } = require("../utils/validation");
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
@@ -41,23 +40,20 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
   }
 });
 
-profileRouter.post("/profile/password/forgot", async (req, res) => {
+
+profileRouter.patch("/profile/password", userAuth, async (req, res) => {
   try {
-    // ✅ Validate input using the function from validation.js
-    validateForgotPasswordData(req);
+    const { newPassword } = req.body;
 
-    const { emailId, newPassword } = req.body;
+    if (!newPassword) throw new Error("New password is required");
 
-    // Find the user
-    const user = await User.findOne({ emailId });
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Hash and update the password
+    // Hash the password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    await user.save();
+
+    // Update only the password field
+    req.user.password = hashedPassword;
+
+    await req.user.save();
 
     res.json({ message: "Password updated successfully" });
   } catch (err) {
@@ -65,5 +61,7 @@ profileRouter.post("/profile/password/forgot", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
+
 
 module.exports = profileRouter;
