@@ -42,18 +42,17 @@ const userSchema = new mongoose.Schema(
     gender: {
       type: String,
       validate(value) {
-        if (!["male", "female", "other"].includes(value)) {
+        if (!["Male", "Female", "Other"].includes(value)) {
           throw new Error("Gender given is invalid: " + value);
         }
       },
     },
-    photoUrl: {
+   photoUrl: {
       type: String,
-      default:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+      default: "https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg?t=st=1740779693~exp=1740783293~hmac=3ffc11733917c931bddeec957e8fa649e6a1590282b3210d816ccbf54dab2e94&w=900",
       validate(value) {
         if (!validator.isURL(value)) {
-          throw new Error("Invalid Photo Url:" + value);
+          throw new Error("Invalid URL :" + value);
         }
       },
     },
@@ -71,7 +70,7 @@ const userSchema = new mongoose.Schema(
 userSchema.methods.getJWT = async function () {
   const user = this;
 
-  const token = await jwt.sign({ _id: user._id }, "dev@connect$1998", {
+  const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
 
