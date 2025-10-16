@@ -1,4 +1,4 @@
-# DevConnect 🚀
+# 👩‍💻 DevConnect
 
 **DevConnect** is a MERN stack application designed to help developers connect, collaborate, and expand their professional network. Similar to Tinder but for developers, users can create profiles, browse other developers, send connection requests, and manage their matches.
 
